@@ -16,20 +16,14 @@ const getUser = (req, res) => {
 
   User.findById(userId)
     .then((user) => {
-      if (!user) {
-        res.status(NOT_FOUND).send({ message: 'Пользователь с таким id не найден' });
-        return;
-      }
       res.status(OK).send({ data: user });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({
-          message: `${Object.values(err.errors)
-            .map((err) => err.message)
-            .join(', ')}`,
-        });
-        return;
+      if (err.name === 'CastError') {
+        res.status(BAD_REQUEST).send({ message: 'Некорректный id' });
+      }
+      if (err.name === 'DocumentNotFoundError') {
+        res.status(NOT_FOUND).send({ message: 'Пользователь с таким id не найден' });
       }
       res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
     });

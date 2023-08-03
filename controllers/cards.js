@@ -34,26 +34,15 @@ const createCard = (req, res) => {
 
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .orFail()
     .then((card) => {
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({
-          message: `${Object.values(err.errors)
-            .map((err) => err.message)
-            .join(', ')}`,
-        });
-        return;
-      }
       if (err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({
-          message: `${Object.values(err.errors)
-            .map((err) => err.message)
-            .join(', ')}`,
-        });
-        return;
+        res.status(BAD_REQUEST).send({ message: 'Некорректный id' });
+      }
+      if (err.name === 'DocumentNotFoundError') {
+        res.status(NOT_FOUND).send({ message: 'Карточка с указанным id не найдена.' });
       }
       res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
     });
@@ -67,8 +56,10 @@ const likeCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({ message: 'Неверный id' });
-        return;
+        res.status(BAD_REQUEST).send({ message: 'Некорректный id' });
+      }
+      if (err.name === 'DocumentNotFoundError') {
+        res.status(NOT_FOUND).send({ message: 'Карточка с указанным id не найдена.' });
       }
       res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
     });
@@ -81,6 +72,12 @@ const dislikeCard = (req, res) => {
       res.status(OK).send(card);
     })
     .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(BAD_REQUEST).send({ message: 'Некорректный id' });
+      }
+      if (err.name === 'DocumentNotFoundError') {
+        res.status(NOT_FOUND).send({ message: 'Карточка с указанным id не найдена.' });
+      }
       res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
     });
 };
