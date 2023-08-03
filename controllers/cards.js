@@ -20,6 +20,14 @@ const createCard = (req, res) => {
         });
     })
     .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(BAD_REQUEST).send({
+          message: `${Object.values(err.errors)
+            .map((err) => err.message)
+            .join(', ')}`,
+        });
+        return;
+      }
       res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
     });
 };
@@ -58,20 +66,8 @@ const likeCard = (req, res) => {
       res.status(OK).send(card);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({
-          message: `${Object.values(err.errors)
-            .map((err) => err.message)
-            .join(', ')}`,
-        });
-        return;
-      }
       if (err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({
-          message: `${Object.values(err.errors)
-            .map((err) => err.message)
-            .join(', ')}`,
-        });
+        res.status(BAD_REQUEST).send({ message: 'Неверный id' });
         return;
       }
       res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
@@ -85,22 +81,6 @@ const dislikeCard = (req, res) => {
       res.status(OK).send(card);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({
-          message: `${Object.values(err.errors)
-            .map((err) => err.message)
-            .join(', ')}`,
-        });
-        return;
-      }
-      if (err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({
-          message: `${Object.values(err.errors)
-            .map((err) => err.message)
-            .join(', ')}`,
-        });
-        return;
-      }
       res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
     });
 };

@@ -23,6 +23,14 @@ const getUser = (req, res) => {
       res.status(OK).send({ data: user });
     })
     .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(BAD_REQUEST).send({
+          message: `${Object.values(err.errors)
+            .map((err) => err.message)
+            .join(', ')}`,
+        });
+        return;
+      }
       res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
     });
 };
@@ -61,6 +69,14 @@ const editUserData = (req, res) => {
       res.status(OK).send({ data: user });
     })
     .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(BAD_REQUEST).send({
+          message: `${Object.values(err.errors)
+            .map((err) => err.message)
+            .join(', ')}`,
+        });
+        return;
+      }
       res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
     });
 };
