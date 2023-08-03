@@ -21,11 +21,11 @@ const getUser = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(BAD_REQUEST).send({ message: 'Некорректный id' });
-      }
-      if (err.name === 'DocumentNotFoundError') {
+      } else if (err.name === 'DocumentNotFoundError') {
         res.status(NOT_FOUND).send({ message: 'Пользователь с таким id не найден' });
+      } else {
+        res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
       }
-      res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
@@ -36,22 +36,10 @@ const createUser = (req, res) => {
     .then((user) => res.status(CREATED).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({
-          message: `${Object.values(err.errors)
-            .map((err) => err.message)
-            .join(', ')}`,
-        });
-        return;
+        res.status(BAD_REQUEST).send({ message: err.message });
+      } else {
+        res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
       }
-      if (err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({
-          message: `${Object.values(err.errors)
-            .map((err) => err.message)
-            .join(', ')}`,
-        });
-        return;
-      }
-      res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
@@ -64,14 +52,12 @@ const editUserData = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({
-          message: `${Object.values(err.errors)
-            .map((err) => err.message)
-            .join(', ')}`,
-        });
-        return;
+        res.status(BAD_REQUEST).send({ message: 'Некорректный id' });
+      } else if (err.name === 'DocumentNotFoundError') {
+        res.status(NOT_FOUND).send({ message: 'Пользователь с таким id не найден' });
+      } else {
+        res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
       }
-      res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
@@ -83,7 +69,13 @@ const editUserAvatar = (req, res) => {
       res.status(OK).send({ data: user });
     })
     .catch((err) => {
-      res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
+      if (err.name === 'ValidationError') {
+        res.status(BAD_REQUEST).send({ message: 'Некорректный id' });
+      } else if (err.name === 'DocumentNotFoundError') {
+        res.status(NOT_FOUND).send({ message: 'Пользователь с таким id не найден' });
+      } else {
+        res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
+      }
     });
 };
 

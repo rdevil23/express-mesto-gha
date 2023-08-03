@@ -21,10 +21,6 @@ app.use((req, res, next) => {
 
 app.use(router);
 
-app.use('*', (req, res) => {
-  res.status(NOT_FOUND).send({ message: 'Страница не найдена' });
-});
-
 mongoose
   .connect(MONGODB_URL, {
     useNewUrlParser: true,

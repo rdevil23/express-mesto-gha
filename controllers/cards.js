@@ -21,14 +21,10 @@ const createCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({
-          message: `${Object.values(err.errors)
-            .map((err) => err.message)
-            .join(', ')}`,
-        });
-        return;
+        res.status(BAD_REQUEST).send({ message: err.message });
+      } else {
+        res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
       }
-      res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
@@ -40,11 +36,11 @@ const deleteCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(BAD_REQUEST).send({ message: 'Некорректный id' });
-      }
-      if (err.name === 'DocumentNotFoundError') {
+      } else if (err.name === 'DocumentNotFoundError') {
         res.status(NOT_FOUND).send({ message: 'Карточка с указанным id не найдена.' });
+      } else {
+        res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
       }
-      res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
@@ -57,11 +53,11 @@ const likeCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(BAD_REQUEST).send({ message: 'Некорректный id' });
-      }
-      if (err.name === 'DocumentNotFoundError') {
+      } else if (err.name === 'DocumentNotFoundError') {
         res.status(NOT_FOUND).send({ message: 'Карточка с указанным id не найдена.' });
+      } else {
+        res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
       }
-      res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
@@ -74,11 +70,11 @@ const dislikeCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(BAD_REQUEST).send({ message: 'Некорректный id' });
-      }
-      if (err.name === 'DocumentNotFoundError') {
+      } else if (err.name === 'DocumentNotFoundError') {
         res.status(NOT_FOUND).send({ message: 'Карточка с указанным id не найдена.' });
+      } else {
+        res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
       }
-      res.status(SERVER_ERROR).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
