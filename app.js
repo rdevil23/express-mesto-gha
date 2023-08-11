@@ -1,29 +1,31 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+const { errors } = require('celebrate');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const cookieParser = require('cookie-parser');
 const router = require('./routes');
-const { NOT_FOUND } = require('./errors/errors');
-require('dotenv').config();
-
+const errorHandler = require('./middlewares/errorHandler');
 const { PORT = 3000, MONGODB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 
 const app = express();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-app.use((req, res, next) => {
-  req.user = {
-    _id: '64c8251b5da78e53faf5dcba',
-  };
-  next();
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
 });
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(router);
 
-app.use('/*', (req, res) => {
-  res.status(NOT_FOUND).send({ message: 'Страница не найдена' });
-});
+app.use(helmet());
+app.use(limiter);
+app.use(cookieParser);
+
+app.use(errors());
+app.use(errorHandler);
 
 mongoose
   .connect(MONGODB_URL, {
