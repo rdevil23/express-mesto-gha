@@ -9,10 +9,12 @@ const { NotFoundError } = require('../errors/errors');
 router.post('/signup', validateSignUp, createUser);
 router.post('/signin', validateSignIn, login);
 
-router.use('/users', auth, usersRoutes);
-router.use('/cards', auth, cardsRoutes);
+router.use(auth);
 
-router.use('*', auth, () => {
+router.use('/users', usersRoutes);
+router.use('/cards', cardsRoutes);
+
+router.use('*', () => {
   throw new NotFoundError('Страница не найдена');
 });
 
