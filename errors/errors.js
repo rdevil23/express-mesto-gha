@@ -1,6 +1,6 @@
 const httpConstants = require('http2').constants;
 const BadRequestError = require('./bad-request-err');
-const NotFoundError = require('./forbidden-err');
+const NotFoundError = require('./not-found-err');
 const AuthError = require('./auth-err');
 const ForbiddenError = require('./forbidden-err');
 const ConflictError = require('./conflict-err');

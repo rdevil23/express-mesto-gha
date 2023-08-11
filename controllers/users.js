@@ -114,7 +114,7 @@ const editUserData = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        next(new BadRequestError(`Переданы некорректные данные при обновлении профиля -- ${err.name}`));
+        next(new BadRequestError(`Переданы некорректные данные при обновлении профиля: ${err.name}`));
       } else {
         next(err);
       }

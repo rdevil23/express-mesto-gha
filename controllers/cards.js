@@ -30,15 +30,17 @@ const deleteCard = (req, res, next) => {
     .then((card) => {
       if (!card) {
         return next(new NotFoundError('Карточка с указанным _id не найдена'));
-      }
-      if (!card.owner.equals(req.user._id)) {
+      } else if (!card.owner.equals(req.user._id)) {
         return next(new ForbiddenError('Попытка удалить чужую карточку'));
+      } else {
+        Card.findByIdAndRemove(req.params.cardId).then(() => {
+          return res.status(OK).send({ message: 'Карточка успешно удалена' });
+        });
       }
-      return card.remove().then(() => res.send({ message: 'Карточка успешно удалена' }));
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError('Переданы некорректные данные'));
+        return next(new BadRequestError('Переданы некорректные данные'));
       } else {
         next(err);
       }
