@@ -2,7 +2,7 @@
 
 ### **Описание проекта**
 
-[react-mesto-auth](https://github.com/rdevil23/react-mesto-auth) с бэкенд частью на Express & Mongo
+Бэкенд на Express & Mongo для [react-mesto-api-full-gha](https://github.com/rdevil23/react-mesto-api-full-gha)
 
 ---
 
