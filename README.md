@@ -48,7 +48,7 @@ npm i
 npm run start
 ```
 
-или запустить сервер с hot-reload
+или запустить с hot-reload:
 
 ```
 npm run dev
